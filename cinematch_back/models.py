@@ -1,13 +1,15 @@
 # Mapeando tabelas no banco de dados com SQLAlchemy
 from datetime import datetime
-from sqlalchemy.orm import Mapped, registry, mapped_column, relationship
+
 from sqlalchemy import ForeignKey, func
+from sqlalchemy.orm import Mapped, mapped_column, registry, relationship
 
 table_registry = registry()
 
+
 @table_registry.mapped_as_dataclass
 class User:
-    __tablename__= 'users'
+    __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(init=False, primary_key=True)
     username: Mapped[str] = mapped_column(unique=True)
@@ -46,4 +48,6 @@ class Movie:
 
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
 
-    user: Mapped[User] = relationship(init=False, back_populates='liked_movies')
+    user: Mapped[User] = relationship(
+        init=False, back_populates='liked_movies'
+    )
