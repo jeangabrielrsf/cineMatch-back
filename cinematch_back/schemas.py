@@ -49,3 +49,7 @@ class MoviePublic(BaseModel):
     popularity: float
     vote_average: float
     vote_count: int
+
+
+class MovieList(BaseModel):
+    liked_movies: list[MoviePublic]

@@ -41,3 +41,26 @@ def test_include_liked_movie(client, token):
         'vote_average': 6.8,
         'vote_count': 400,
     }
+
+
+def test_list_liked_movies_empty(client, token):
+    response = client.get(
+        '/movies/', headers={'Authorization': f'Bearer {token}'}
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'liked_movies': []}
+
+
+def test_list_liked_movies_should_return_5_movies(
+    client, session, token, user
+):
+    movies_quantity = 5
+    session.bulk_save_objects(MovieFactory.create_batch(5, user_id=user.id))
+    session.commit()
+
+    response = client.get(
+        '/movies/', headers={'Authorization': f'Bearer {token}'}
+    )
+    assert response.status_code == HTTPStatus.OK
+    assert len(response.json()['liked_movies']) == movies_quantity

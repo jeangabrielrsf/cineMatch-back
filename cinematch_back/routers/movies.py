@@ -1,12 +1,13 @@
 from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from cinematch_back.database import get_session
 from cinematch_back.models import Movie, User
-from cinematch_back.schemas import MoviePublic, MovieSchema
+from cinematch_back.schemas import MovieList, MoviePublic, MovieSchema
 from cinematch_back.security import get_current_user
 
 router = APIRouter(prefix='/movies', tags=['movies'])
@@ -34,3 +35,21 @@ def include_liked_movie(
     session.refresh(db_movie)
 
     return db_movie
+
+
+@router.get('/', status_code=HTTPStatus.OK, response_model=MovieList)
+def list_liked_movies(
+    session: CurrentSession,
+    user: CurrentUser,
+    title: str = Query(None),
+    offset: int = Query(None),
+    limit: int = Query(None),
+):
+    query = select(Movie).where(Movie.user_id == user.id)
+
+    if title:
+        query = query.filter(Movie.title.contains(title))
+
+    movies = session.scalars(query.offset(offset).limit(limit)).all()
+
+    return {'liked_movies': movies}
