@@ -30,3 +30,22 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class MovieSchema(BaseModel):
+    title: str
+    overview: str
+    tmdb_id: int
+    popularity: float
+    vote_average: float
+    vote_count: int
+
+
+class MoviePublic(BaseModel):
+    id: int
+    title: str
+    overview: str
+    tmdb_id: int
+    popularity: float
+    vote_average: float
+    vote_count: int
