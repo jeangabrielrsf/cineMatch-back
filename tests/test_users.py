@@ -62,3 +62,52 @@ def test_list_users(client, user):
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'users': [users_schema]}
+
+
+def test_update_user(client, user, token):
+    response = client.put(
+        f'/users/{user.id}',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'username': 'Bruna',
+            'email': 'bruna@example.com',
+            'password': 'novasenha',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'username': 'Bruna',
+        'email': 'bruna@example.com',
+        'id': user.id,
+    }
+
+
+def test_update_user_credentials_error(client, token, other_user):
+    response = client.put(
+        f'/users/{other_user.id}',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'username': 'Bruna meu amor',
+            'email': 'bruna@example.com',
+            'password': 'minhanovasenha',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.json() == {'detail': 'Not enough permissions'}
+
+
+def test_update_user_unauthorized_error(client):
+    response = client.put(
+        '/users/0',
+        headers={'Authorization': 'Bearer fake_token'},
+        json={
+            'username': 'Bruna meu amor',
+            'email': 'bruna@example.com',
+            'password': 'minhanovasenha',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {'detail': 'Could not validate credentials'}

@@ -8,6 +8,7 @@ from sqlalchemy.pool import StaticPool
 from cinematch_back.app import app
 from cinematch_back.database import get_session
 from cinematch_back.models import User, table_registry
+from cinematch_back.security import get_password_hash
 
 
 class UserFactory(factory.Factory):
@@ -49,7 +50,7 @@ def session():
 @pytest.fixture()
 def user(session):
     password = 'teste'
-    user = UserFactory(password=password)
+    user = UserFactory(password=get_password_hash(password))
 
     session.add(user)
     session.commit()
@@ -58,3 +59,27 @@ def user(session):
     user.clean_password = 'teste'
 
     return user
+
+
+@pytest.fixture()
+def other_user(session):
+    password = '123senha123'
+    user = UserFactory(password=get_password_hash(password))
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    user.clean_password = '123senha123'
+
+    return user
+
+
+@pytest.fixture()
+def token(client, user):
+    response = client.post(
+        '/auth/token',
+        data={'username': user.email, 'password': user.clean_password},
+    )
+
+    return response.json()['access_token']

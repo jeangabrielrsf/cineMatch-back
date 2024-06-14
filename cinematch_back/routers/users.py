@@ -66,8 +66,8 @@ def update_user(
             status_code=HTTPStatus.BAD_REQUEST, detail='Not enough permissions'
         )
 
-    current_user.username = (user.username,)
-    current_user.email = (user.email,)
+    current_user.username = user.username
+    current_user.email = user.email
     current_user.password = get_password_hash(user.password)
 
     session.commit()
