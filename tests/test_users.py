@@ -1,5 +1,7 @@
 from http import HTTPStatus
 
+from cinematch_back.schemas import UserPublic
+
 
 def test_create_user(client):
     response = client.post(
@@ -45,3 +47,18 @@ def test_create_user_email_error(client, user):
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'Email already exists'}
+
+
+def test_list_users_empty(client):
+    response = client.get('/users/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'users': []}
+
+
+def test_list_users(client, user):
+    users_schema = UserPublic.model_validate(user).model_dump()
+    response = client.get('/users/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'users': [users_schema]}

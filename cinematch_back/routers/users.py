@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from cinematch_back.database import get_session
 from cinematch_back.models import User
-from cinematch_back.schemas import UserPublic, UserSchema
+from cinematch_back.schemas import UserList, UserPublic, UserSchema
 
 router = APIRouter(prefix='/users', tags=['users'])
 
@@ -42,3 +42,10 @@ def create_user(user: UserSchema, session: CurrentSession):
     session.refresh(db_user)
 
     return db_user
+
+
+@router.get('/', status_code=HTTPStatus.OK, response_model=UserList)
+def list_users(session: CurrentSession, skip: int = 0, limit: int = 50):
+    users = session.scalars(select(User).offset(skip).limit(limit)).all()
+
+    return {'users': users}
