@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     )
 
     DATABASE_URL: str
+    DATABASE_URL_LOCAL: str
     TOKEN_EXPIRE_TIME: int
     SECRET_KEY: str
     ALGORITHM: str
