@@ -51,3 +51,28 @@ class Movie:
     user: Mapped[User] = relationship(
         init=False, back_populates='liked_movies'
     )
+
+
+@table_registry.mapped_as_dataclass
+class Serie:
+    __tablename__ = 'liked_series'
+
+    id: Mapped[int] = mapped_column(init=False, primary_key=True)
+    name: Mapped[str]
+    overview: Mapped[str]
+    tmdb_id: Mapped[int]
+    popularity: Mapped[float]
+    vote_average: Mapped[float]
+    vote_count: Mapped[int]
+    created_at: Mapped[datetime] = mapped_column(
+        init=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        init=False, server_default=func.now(), onupdate=func.now()
+    )
+
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+
+    user: Mapped[User] = relationship(
+        init=False, back_populates='liked_series'
+    )

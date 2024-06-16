@@ -53,3 +53,26 @@ class MoviePublic(BaseModel):
 
 class MovieList(BaseModel):
     liked_movies: list[MoviePublic]
+
+
+class SerieSchema(BaseModel):
+    name: str
+    overview: str
+    tmdb_id: int
+    popularity: float
+    vote_average: float
+    vote_count: int
+
+
+class SeriePublic(BaseModel):
+    id: int
+    name: str
+    overview: str
+    tmdb_id: int
+    popularity: float
+    vote_average: float
+    vote_count: int
+
+
+class SerieList(BaseModel):
+    liked_series: list[SeriePublic]
