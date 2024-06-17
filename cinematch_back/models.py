@@ -26,6 +26,10 @@ class User:
         init=False, back_populates='user', cascade='all, delete-orphan'
     )
 
+    liked_series: Mapped[list['Serie']] = relationship(
+        init=False, back_populates='user', cascade='all, delete-orphan'
+    )
+
 
 # filmes curtidos pelo usuário
 @table_registry.mapped_as_dataclass

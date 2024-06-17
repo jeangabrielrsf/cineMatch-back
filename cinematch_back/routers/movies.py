@@ -1,4 +1,3 @@
-import json
 from http import HTTPStatus
 from typing import Annotated
 
@@ -64,12 +63,8 @@ def list_recommended_movies(session: CurrentSession, user: CurrentUser):
     movies = session.scalars(query).all()
     final_list: MovieList = []
     for movie in movies:
-        print('entrei no movie')
-        print(json.dumps(movie))
         recommended_list = get_recommendation_by_id(movie.id)
-        print(f'RECOMENDAÇÕES DO {movie.title}')
         for item in recommended_list['results']:
-            print(item['media_type'])
             if item['title'] in final_list or item['title'] in movies:
                 continue
             new_movie = Movie(

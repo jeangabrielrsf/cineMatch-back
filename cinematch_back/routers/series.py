@@ -1,12 +1,13 @@
-from typing import Annotated
 from http import HTTPStatus
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from cinematch_back.database import get_session
-from cinematch_back.models import User, Serie
-from cinematch_back.schemas import SerieSchema, SeriePublic, SerieList
+from cinematch_back.models import Serie, User
+from cinematch_back.schemas import SerieList, SeriePublic, SerieSchema
 from cinematch_back.security import get_current_user
 from cinematch_back.service import get_recommendation_series_by_id
 
@@ -27,7 +28,7 @@ def include_liked_serie(
         popularity=serie.popularity,
         vote_average=serie.vote_average,
         vote_count=serie.vote_count,
-        user_id=user.id
+        user_id=user.id,
     )
 
     session.add(db_serie)
@@ -43,13 +44,13 @@ def list_liked_series(
     user: CurrentUser,
     name: str = Query(None),
     offset: int = Query(None),
-    limit: int = Query(None)
+    limit: int = Query(None),
 ):
     query = select(Serie).where(Serie.user_id == user.id)
 
     if name:
         query = query.filter(Serie.name.contains(name))
-    
+
     series = session.scalars(query.offset(offset).limit(limit)).all()
 
     return {'liked_series': series}
@@ -60,7 +61,7 @@ def list_recommended_series(session: CurrentSession, user: CurrentUser):
     query = select(Serie).where(Serie.user_id == user.id)
 
     series = session.scalars(query).all()
-    final_list: SerieList= []
+    final_list: SerieList = []
     for serie in series:
         recommended_list = get_recommendation_series_by_id(serie.id)
         for item in recommended_list['results']:
