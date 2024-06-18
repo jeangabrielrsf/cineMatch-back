@@ -41,6 +41,8 @@ class Movie:
     overview: Mapped[str]
     tmdb_id: Mapped[int]
     popularity: Mapped[float]
+    poster_path: Mapped[str]
+    release_date: Mapped[str]
     vote_average: Mapped[float]
     vote_count: Mapped[int]
     created_at: Mapped[datetime] = mapped_column(
@@ -66,6 +68,8 @@ class Serie:
     overview: Mapped[str]
     tmdb_id: Mapped[int]
     popularity: Mapped[float]
+    poster_path: Mapped[str]
+    first_air_date: Mapped[str]
     vote_average: Mapped[float]
     vote_count: Mapped[int]
     created_at: Mapped[datetime] = mapped_column(

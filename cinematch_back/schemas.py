@@ -37,6 +37,8 @@ class MovieSchema(BaseModel):
     overview: str
     tmdb_id: int
     popularity: float
+    poster_path: str
+    release_date: str
     vote_average: float
     vote_count: int
 
@@ -47,6 +49,8 @@ class MoviePublic(BaseModel):
     overview: str
     tmdb_id: int
     popularity: float
+    poster_path: str
+    release_date: str
     vote_average: float
     vote_count: int
 
@@ -60,6 +64,8 @@ class SerieSchema(BaseModel):
     overview: str
     tmdb_id: int
     popularity: float
+    poster_path: str
+    first_air_date: str
     vote_average: float
     vote_count: int
 
@@ -70,6 +76,8 @@ class SeriePublic(BaseModel):
     overview: str
     tmdb_id: int
     popularity: float
+    poster_path: str
+    first_air_date: str
     vote_average: float
     vote_count: int
 

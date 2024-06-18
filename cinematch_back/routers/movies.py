@@ -1,7 +1,8 @@
+import random
 from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -27,6 +28,8 @@ def include_liked_movie(
         tmdb_id=movie.tmdb_id,
         popularity=movie.popularity,
         vote_average=movie.vote_average,
+        poster_path=movie.poster_path,
+        release_date=movie.release_date,
         vote_count=movie.vote_count,
         user_id=user.id,
     )
@@ -61,21 +64,16 @@ def list_recommended_movies(session: CurrentSession, user: CurrentUser):
     query = select(Movie).where(Movie.user_id == user.id)
 
     movies = session.scalars(query).all()
+    if len(movies) == 0:
+        return movies
     final_list: MovieList = []
     for movie in movies:
-        recommended_list = get_recommendation_by_id(movie.id)
+        recommended_list = get_recommendation_by_id(movie.tmdb_id)
+    
         for item in recommended_list['results']:
             if item['title'] in final_list or item['title'] in movies:
                 continue
-            new_movie = Movie(
-                title=item['title'],
-                overview=item['overview'],
-                tmdb_id=item['id'],
-                popularity=item['popularity'],
-                vote_average=item['vote_average'],
-                vote_count=item['vote_count'],
-                user_id=user.id,
-            )
-            final_list.append(new_movie)
+            final_list.append(item)
 
-    return final_list
+    random.shuffle(final_list)
+    return final_list[0:5]

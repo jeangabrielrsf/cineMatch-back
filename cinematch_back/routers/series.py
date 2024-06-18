@@ -1,3 +1,4 @@
+import random
 from http import HTTPStatus
 from typing import Annotated
 
@@ -29,6 +30,8 @@ def include_liked_serie(
         vote_average=serie.vote_average,
         vote_count=serie.vote_count,
         user_id=user.id,
+        first_air_date=serie.first_air_date,
+        poster_path=serie.poster_path
     )
 
     session.add(db_serie)
@@ -61,21 +64,16 @@ def list_recommended_series(session: CurrentSession, user: CurrentUser):
     query = select(Serie).where(Serie.user_id == user.id)
 
     series = session.scalars(query).all()
+    if len(series) == 0:
+        return series
     final_list: SerieList = []
     for serie in series:
-        recommended_list = get_recommendation_series_by_id(serie.id)
+        recommended_list = get_recommendation_series_by_id(serie.tmdb_id)
         for item in recommended_list['results']:
             if item['name'] in final_list or item['name'] in series:
                 continue
-            new_serie = Serie(
-                name=item['name'],
-                overview=item['overview'],
-                tmdb_id=item['id'],
-                popularity=item['popularity'],
-                vote_average=item['vote_average'],
-                vote_count=item['vote_count'],
-                user_id=user.id,
-            )
-            final_list.append(new_serie)
+            final_list.append(item)
+    
+    random.shuffle(final_list)
 
-    return final_list
+    return final_list[0:5]
