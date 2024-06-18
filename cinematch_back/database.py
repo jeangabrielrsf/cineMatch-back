@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from cinematch_back.settings import Settings
 
-engine = create_engine(Settings().DATABASE_URL_LOCAL)
+engine = create_engine(Settings().DATABASE_URL)
 
 
 def get_session():
