@@ -15,7 +15,7 @@ from cinematch_back.security import (
     verify_password,
 )
 
-router = APIRouter(prefix='/auth', tags=['auth'])
+router = APIRouter(prefix='/api/auth', tags=['auth'])
 OAuth2Form = Annotated[OAuth2PasswordRequestForm, Depends()]
 CurrentSession = Annotated[Session, Depends(get_session)]
 

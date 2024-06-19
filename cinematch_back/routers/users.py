@@ -10,7 +10,7 @@ from cinematch_back.models import User
 from cinematch_back.schemas import UserList, UserPublic, UserSchema
 from cinematch_back.security import get_current_user, get_password_hash
 
-router = APIRouter(prefix='/users', tags=['users'])
+router = APIRouter(prefix='/api/users', tags=['users'])
 
 CurrentSession = Annotated[Session, Depends(get_session)]
 CurrentUser = Annotated[User, Depends(get_current_user)]

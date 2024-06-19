@@ -13,7 +13,12 @@ app.include_router(auth.router)
 app.include_router(movies.router)
 app.include_router(series.router)
 
-origins = ['http://localhost', 'http://localhost:5173']
+origins = [
+    'http://localhost',
+    'http://localhost:5173',
+    'http://nginx_app',
+    'http://localhost:8080',
+]
 
 app.add_middleware(
     CORSMiddleware,

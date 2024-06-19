@@ -12,7 +12,7 @@ from cinematch_back.schemas import SerieList, SeriePublic, SerieSchema
 from cinematch_back.security import get_current_user
 from cinematch_back.service import get_recommendation_series_by_id
 
-router = APIRouter(prefix='/series', tags=['series'])
+router = APIRouter(prefix='/api/series', tags=['series'])
 
 CurrentSession = Annotated[Session, Depends(get_session)]
 CurrentUser = Annotated[User, Depends(get_current_user)]
@@ -31,7 +31,7 @@ def include_liked_serie(
         vote_count=serie.vote_count,
         user_id=user.id,
         first_air_date=serie.first_air_date,
-        poster_path=serie.poster_path
+        poster_path=serie.poster_path,
     )
 
     session.add(db_serie)
@@ -73,7 +73,7 @@ def list_recommended_series(session: CurrentSession, user: CurrentUser):
             if item['name'] in final_list or item['name'] in series:
                 continue
             final_list.append(item)
-    
+
     random.shuffle(final_list)
 
     return final_list[0:5]

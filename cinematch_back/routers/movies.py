@@ -2,7 +2,7 @@ import random
 from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -12,7 +12,7 @@ from cinematch_back.schemas import MovieList, MoviePublic, MovieSchema
 from cinematch_back.security import get_current_user
 from cinematch_back.service import get_recommendation_by_id
 
-router = APIRouter(prefix='/movies', tags=['movies'])
+router = APIRouter(prefix='/api/movies', tags=['movies'])
 
 CurrentSession = Annotated[Session, Depends(get_session)]
 CurrentUser = Annotated[User, Depends(get_current_user)]
@@ -69,7 +69,7 @@ def list_recommended_movies(session: CurrentSession, user: CurrentUser):
     final_list: MovieList = []
     for movie in movies:
         recommended_list = get_recommendation_by_id(movie.tmdb_id)
-    
+
         for item in recommended_list['results']:
             if item['title'] in final_list or item['title'] in movies:
                 continue
